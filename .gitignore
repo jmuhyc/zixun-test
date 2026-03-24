@@ -12,3 +12,5 @@ output_images/*.jpg
 # 环境
 .env
 .venv
+
+config.py
