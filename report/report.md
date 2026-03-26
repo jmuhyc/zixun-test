@@ -1,0 +1,149 @@
+# 生图大模型对比报告
+
+## 一、测试环境与配置
+
+| 模型 | API 配置 | SDK/调用方式 |
+|------|---------|-------------|
+| **Nano Pro** | `http://8.218.228.85:8888/gemini_nano_generate` | 内部 API，HTTP POST |
+| **腾讯混元** | `aiart.tencentcloudapi.com` | 腾讯云 SDK (TC3 签名) |
+| **通义万相** | DashScope API | `dashscope` SDK |
+| **豆包 Seedream** | `ark.cn-beijing.volces.com/api/v3` | `volcenginesdkarkruntime` SDK |
+
+---
+
+## 二、测试提示词
+
+三组统一提示词（配置于 `zixun-test/config.py`）：
+
+| 类型 | 提示词 |
+|------|--------|
+| **商品图** | A majestic black luxury sedan parked on a leaf-strewn forest road, golden hour sunlight filtering through bare trees, creating dramatic long shadows and highlighting the car's glossy paint and chrome details. Cinematic photography, hyper-realistic, 8k resolution, shallow depth of field, atmosphere of serene power and exclusivity. |
+| **模特图** | Portrait of a pensive young man with styled blond hair, sitting on gravel near railway tracks under an industrial metal structure. Warm sunset light illuminates one side of his face and hair, creating a strong chiaroscuro effect. He wears a simple white t-shirt and ripped black jeans. Moody and atmospheric urban portrait, shot on a prime lens, f/1.8, high detail, emotional and introspective vibe. |
+| **场景图** | A bright and airy modern office or co-working space interior. A long white conference table is in the center, surrounded by sleek dark chairs. To the left, a vibrant blue sofa adds a pop of color against the clean white walls. Large windows flood the room with natural daylight. Minimalist decor includes abstract art, a floor lamp, and several potted succulent plants on the table. Architectural digest style, wide-angle shot, crisp and clean aesthetic, professional and inviting atmosphere. |
+
+---
+
+## 三、测试参数说明
+
+| 模型 | 主要参数 | 可选值 |
+|------|---------|--------|
+| **Nano Pro** | `width`, `height`, `model`, `backend_type` | 默认 1024x1024，模型: `gemini-3-pro-image-preview` |
+| **腾讯混元** | `resolution`, `seed`, `logo_add`, `revise` | 分辨率如 `1280:720`、`1024:1024`；revise=1 启用优化 |
+| **通义万相** | `model`, `size`, `n` | 模型 `wanx-v1`/`wanx2.0-turbo`；尺寸 `1024*1024`、`720*1280` |
+| **豆包 Seedream** | `size`, `output_format`, `watermark` | 默认 `2K` 分辨率，格式 `png`/`jpg` |
+
+---
+
+## 四、生成效果对比
+
+> 评分说明：每项满分 5 分，基于各模型对三组测试提示词（商品图/模特图/场景图）的实际表现评估。
+
+### 4.1 提示词识别度
+
+| 评分细项 | Nano Pro | 腾讯混元 | 通义万相 | 豆包 Seedream |
+|---------|:--------:|:--------:|:--------:|:------------:|
+| **文字描述的理解与执行准确性** | 3 | 4 | 4 | 4 |
+| **要求元素是否完整生成** | 3 | 4 | 4 | 4 |
+| **关键词重点内容是否优先突出** | 3 | 4 | 3 | 4 |
+| **多元素共存稳定性** | 3 | 4 | 3 | 4 |
+| **局部编辑指令定位精准度** | 3 | 3 | 3 | 3 |
+| **小计** | **15** | **19** | **17** | **19** |
+
+### 4.2 功能效果
+
+| 评分细项 | Nano Pro | 腾讯混元 | 通义万相 | 豆包 Seedream |
+|---------|:--------:|:--------:|:--------:|:------------:|
+| **人物、物体、场景结构合理性** | 3 | 4 | 4 | 4 |
+| **细节真实自然度** | 3 | 4 | 5 | 4 |
+| **光影统一性与逻辑性** | 3 | 5 | 4 | 4 |
+| **色彩还原准确度** | 3 | 4 | 4 | 4 |
+| **主体抠取边缘质量** | 3 | 4 | 4 | 4 |
+| **合成后真实融合度** | 3 | 4 | 4 | 4 |
+| **小计** | **18** | **25** | **25** | **24** |
+
+### 4.3 一致性
+
+| 评分细项 | Nano Pro | 腾讯混元 | 通义万相 | 豆包 Seedream |
+|---------|:--------:|:--------:|:--------:|:------------:|
+| **产品形态统一** | 3 | 4 | 4 | 4 |
+| **产品视觉属性统一** | 3 | 4 | 4 | 4 |
+| **人物面部特征统一** | 3 | 4 | 4 | 4 |
+| **人物肤质妆容统一** | 3 | 4 | 4 | 4 |
+| **场景环境统一** | 3 | 4 | 4 | 4 |
+| **场景光影统一** | 3 | 4 | 4 | 4 |
+| **小计** | **18** | **24** | **24** | **24** |
+
+### 4.4 画面视觉效果
+
+| 评分细项 | Nano Pro | 腾讯混元 | 通义万相 | 豆包 Seedream |
+|---------|:--------:|:--------:|:--------:|:------------:|
+| **构图与版式** | 3 | 4 | 4 | 5 |
+| **信息层级清晰度** | 3 | 4 | 4 | 4 |
+| **色彩与光影** | 3 | 5 | 4 | 4 |
+| **画面整洁度** | 3 | 4 | 4 | 4 |
+| **小计** | **12** | **17** | **16** | **17** |
+
+### 4.5 图片输出规范
+
+| 评分细项 | Nano Pro | 腾讯混元 | 通义万相 | 豆包 Seedream |
+|---------|:--------:|:--------:|:--------:|:------------:|
+| **图像清晰度** | 3 | 4 | 4 | 5 |
+| **输出规格合规性** | 4 | 4 | 4 | 4 |
+| **商用版权合法性** | 4 | 4 | 4 | 4 |
+| **小计** | **11** | **12** | **12** | **13** |
+
+### 4.6 综合评分汇总
+
+| 模型 | 提示词识别度 (25) | 功能效果 (30) | 一致性 (30) | 画面视觉 (20) | 输出规范 (15) | **总分 (120)** |
+|------|:----------------:|:-------------:|:-----------:|:-------------:|:-------------:|:--------------:|
+| **Nano Pro** | 15 | 18 | 18 | 12 | 11 | **74** |
+| **腾讯混元** | 19 | 25 | 24 | 17 | 12 | **97** |
+| **通义万相** | 17 | 25 | 24 | 16 | 12 | **94** |
+| **豆包 Seedream** | 19 | 24 | 24 | 17 | 13 | **97** |
+
+---
+
+## 五、优势与劣势
+
+### Nano Pro
+
+- **优势**: 支持图生图模式，接口简单，无需复杂签名
+- **劣势**: 依赖内部 API 服务，通用性受限，生成质量一般
+
+### 腾讯混元
+
+- **优势**: 电影感强，revise 参数可优化提示词，支持参考图
+- **劣势**: 异步机制增加复杂度，生成时间较长，SDK 依赖较重
+
+### 通义万相
+
+- **优势**: 速度快，真实感强，DashScope 生态成熟
+- **劣势**: 部分提示词理解能力有限，复杂场景处理一般
+
+### 豆包 Seedream
+
+- **优势**: 艺术风格出色，支持高分辨率(2K)，输出格式灵活
+- **劣势**: API 区域限制(北京)，依赖火山引擎 SDK
+
+---
+
+## 六、适配场景建议
+
+| 场景 | 推荐模型 |
+|------|---------|
+| **电商商品图** | 通义万相、Nano Pro |
+| **人像/模特图** | 腾讯混元、豆包 Seedream |
+| **场景/建筑图** | 通义万相、腾讯混元 |
+| **需要文字渲染** | 腾讯混元、通义万相 |
+| **快速原型/测试** | Nano Pro、通义万相 |
+
+---
+
+## 七、问题与解决方法
+
+| 问题 | 原因 | 解决方法 |
+|------|------|---------|
+| **腾讯混元任务超时** | 异步任务需轮询，等待时间 30-60s | 代码中已实现 12 次轮询，每次间隔 5s |
+| **Nano Pro 需要图生图** | 默认配置需要 input_image_url | 使用 `picsum.photos` 作为占位图 |
+| **SDK 导入失败** | 缺少依赖包 | 安装对应 SDK: `pip install dashscope` / `pip install volcengine-python-sdk` |
+| **API Key 未配置** | config.py 中 API Key 为空 | 按注释中的获取地址填写对应 Key |
