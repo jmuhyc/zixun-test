@@ -4,7 +4,7 @@ API Key 配置文件
 """
 
 # Nano Pro API 配置
-NANO_PRO_API_URL = "http://8.218.228.85:8888/gemini_nano_generate"
+# NANO_PRO_API_URL =
 NANO_PRO_API_KEY = ""  # 如果需要 API Key 请在此填写
 
 # 通义万相 (DashScope) API Key

@@ -4,7 +4,7 @@
 
 | 模型 | API 配置 | SDK/调用方式 |
 |------|---------|-------------|
-| **Nano Pro** | `http://8.218.228.85:8888/gemini_nano_generate` | 内部 API，HTTP POST |
+| **Nano Pro** | `` | 内部 API，HTTP POST |
 | **腾讯混元** | `aiart.tencentcloudapi.com` | 腾讯云 SDK (TC3 签名) |
 | **通义万相** | DashScope API | `dashscope` SDK |
 | **豆包 Seedream** | `ark.cn-beijing.volces.com/api/v3` | `volcenginesdkarkruntime` SDK |
@@ -151,13 +151,14 @@
 
 
 
+
 ---
 
 ## 八、HPSv2 自动化评分 (Human Preference Score v2)
 
 > HPSv2 是一种基于 CLIP 架构的自动化评分方法，用于评估图像与文本提示的一致性。分数范围 0-1，越高表示图像与提示词的匹配度越高。
 >
-> **评估时间**: 2026-03-26 15:06:06
+> **评估时间**: 2026-03-26 17:45:25
 
 ### 8.1 各模型 HPSv2 评分详情
 
@@ -185,7 +186,6 @@
 | **hunyuan** | 97 | 0.9710 | 0.8083 | 基本一致 |
 | **wanx** | 94 | 0.9478 | 0.7833 | 基本一致 |
 | **seedream** | 97 | 0.9311 | 0.8083 | 高度一致 |
-
 
 ---
 
