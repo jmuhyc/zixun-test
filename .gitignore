@@ -13,5 +13,8 @@ output_images/*.jpg
 .env
 .venv
 
-# api密钥管理
+# api 密钥管理
 config.py
+
+# IDEA
+.idea/
