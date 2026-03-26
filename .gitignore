@@ -13,4 +13,5 @@ output_images/*.jpg
 .env
 .venv
 
+# api密钥管理
 config.py

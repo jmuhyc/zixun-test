@@ -5,10 +5,10 @@
 
 import os
 import requests
-from config import DASHSCOPE_API_KEY
+from config import DASHSCOPE_API_KEY, IMAGE_GENERATION_PROMPTS
 
 # 统一输出文件夹
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_images")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../output_images")
 
 # 设置 DashScope API Key - 必须在导入 dashscope 之前设置
 os.environ["DASHSCOPE_API_KEY"] = DASHSCOPE_API_KEY
@@ -84,10 +84,23 @@ def generate_wanx_image(
 
 
 if __name__ == "__main__":
-    # 示例调用
-    user_prompt = "一只在太空行走的熊猫，赛博朋克风格，高分辨率"
-    result = generate_wanx_image(
-        prompt=user_prompt,
-        save_to_file=True
-    )
-    print(result)
+    # 批量生成 config.py 中统一的三组提示词图片
+    results = {}
+    for image_type, user_prompt in IMAGE_GENERATION_PROMPTS.items():
+        print(f"\n{'='*50}")
+        print(f"开始生成【{image_type}】...")
+        print(f"{'='*50}\n")
+
+        result = generate_wanx_image(
+            prompt=user_prompt,
+            save_to_file=True,
+            output_filename=f"wanx_{image_type}.png"
+        )
+        results[image_type] = result
+
+    print(f"\n{'='*50}")
+    print("批量生成完成！")
+    print(f"{'='*50}")
+    for img_type, res in results.items():
+        status = "成功" if res.get("success") else "失败"
+        print(f"【{img_type}】: {status}")

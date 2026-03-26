@@ -5,10 +5,10 @@
 
 import os
 import requests
-from config import ARK_API_KEY
+from config import ARK_API_KEY, IMAGE_GENERATION_PROMPTS
 
 # 统一输出文件夹
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_images")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../output_images")
 
 
 def generate_seedream_image(
@@ -97,10 +97,23 @@ def generate_seedream_image(
 
 
 if __name__ == "__main__":
-    # 示例调用
-    user_prompt = "充满活力的特写编辑肖像，模特眼神犀利，头戴雕塑感帽子，色彩拼接丰富，眼部焦点锐利，景深较浅，具有 Vogue 杂志封面的美学风格，采用中画幅拍摄，工作室灯光效果强烈。"
-    result = generate_seedream_image(
-        prompt=user_prompt,
-        save_to_file=True
-    )
-    print(result)
+    # 批量生成 config.py 中统一的三组提示词图片
+    results = {}
+    for image_type, user_prompt in IMAGE_GENERATION_PROMPTS.items():
+        print(f"\n{'='*50}")
+        print(f"开始生成【{image_type}】...")
+        print(f"{'='*50}\n")
+
+        result = generate_seedream_image(
+            prompt=user_prompt,
+            save_to_file=True,
+            output_filename=f"seedream_{image_type}.png"
+        )
+        results[image_type] = result
+
+    print(f"\n{'='*50}")
+    print("批量生成完成！")
+    print(f"{'='*50}")
+    for img_type, res in results.items():
+        status = "成功" if res.get("success") else "失败"
+        print(f"【{img_type}】: {status}")

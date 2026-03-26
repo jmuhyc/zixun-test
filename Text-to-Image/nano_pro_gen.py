@@ -5,7 +5,7 @@ Nano Pro 图像生成 API 调用脚本
 
 import requests
 import json
-from config import NANO_PRO_API_URL, NANO_PRO_API_KEY
+from config import NANO_PRO_API_URL, NANO_PRO_API_KEY, IMAGE_GENERATION_PROMPTS
 
 
 def generate_nano_image(
@@ -67,10 +67,13 @@ def generate_nano_image(
 
 
 if __name__ == "__main__":
-    # 示例调用
+    # 使用 config.py 中统一的提示词
+    user_prompt = IMAGE_GENERATION_PROMPTS["商品图"]
+    # Nano Pro 需要图生图模式，需要提供输入图片 URL
+    input_image_url = "https://picsum.photos/1024/1024"
     result = generate_nano_image(
-        prompt="Change the style to watercolor painting",
-        image_url="https://picsum.photos/seed/test/512/512.jpg",
+        prompt=user_prompt,
+        image_url=input_image_url,
         width=1024,
         height=1024
     )

@@ -15,11 +15,12 @@ from tencentcloud.aiart.v20221229 import aiart_client, models
 from config import (
     TENCENT_SECRET_ID,
     TENCENT_SECRET_KEY,
-    TENCENT_REGION
+    TENCENT_REGION,
+    IMAGE_GENERATION_PROMPTS
 )
 
 # 统一输出文件夹
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_images")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../output_images")
 
 
 # ================= TC3 签名算法 =================
@@ -257,31 +258,46 @@ def query_text_to_image_job(job_id: str, save_to_file: bool = False, output_file
 
 
 if __name__ == "__main__":
-    # 示例调用
-    user_prompt = "一只戴着墨镜的卡通猫坐在沙滩上喝椰子汁，背景是夕阳大海，高清细节"
-    result = submit_text_to_image_job(
-        prompt=user_prompt,
-        resolution="1280:720"
-    )
+    # 批量生成 config.py 中统一的三组提示词图片
+    results = {}
+    for image_type, user_prompt in IMAGE_GENERATION_PROMPTS.items():
+        print(f"\n{'='*50}")
+        print(f"开始生成【{image_type}】...")
+        print(f"{'='*50}\n")
 
-    # 如果有 JobId，可以查询任务状态
-    if result.get("success") and result.get("job_id"):
-        job_id = result["job_id"]
-        print("\n--- 开始轮询任务状态（最多 60 秒）---")
-        # 轮询直到任务完成
-        for i in range(12):  # 最多轮询 12 次，每次 5 秒
-            time.sleep(5)
-            query_result = query_text_to_image_job(job_id, save_to_file=True)
-            # 检查是否完成 - SDK 返回的字段是 JobStatusCode
-            # 2 表示处理中，5 表示完成（待领取），9 表示成功，10 表示失败
-            job_status_code = query_result.get("JobStatusCode", "")
-            result_image = query_result.get("ResultImage", [])
+        result = submit_text_to_image_job(
+            prompt=user_prompt,
+            resolution="1280:720"
+        )
 
-            if job_status_code in ["5", "9"] or (result_image and len(result_image) > 0):  # 成功
-                print("\n[OK] 任务完成！")
-                break
-            elif job_status_code == "10":  # 失败
-                print("\n[ERROR] 任务失败！")
-                break
-            else:
-                print(f"\n[INFO] 任务仍在处理中，继续等待... (当前状态码：{job_status_code})")
+        # 如果有 JobId，查询任务状态
+        if result.get("success") and result.get("job_id"):
+            job_id = result["job_id"]
+            print(f"\n--- 轮询任务状态（最多 60 秒）---")
+            for i in range(12):
+                time.sleep(5)
+                query_result = query_text_to_image_job(
+                    job_id,
+                    save_to_file=True,
+                    output_filename=f"hunyuan_{image_type}.png"
+                )
+                job_status_code = query_result.get("JobStatusCode", "")
+                result_image = query_result.get("ResultImage", [])
+
+                if job_status_code in ["5", "9"] or (result_image and len(result_image) > 0):
+                    print(f"\n[OK] 【{image_type}】任务完成！")
+                    results[image_type] = {"success": True, "job_id": job_id}
+                    break
+                elif job_status_code == "10":
+                    print(f"\n[ERROR] 【{image_type}】任务失败！")
+                    results[image_type] = {"success": False, "error": "任务失败"}
+                    break
+                else:
+                    print(f"\n[INFO] 【{image_type}】仍在处理中... (当前状态码：{job_status_code})")
+
+    print(f"\n{'='*50}")
+    print("批量生成完成！")
+    print(f"{'='*50}")
+    for img_type, res in results.items():
+        status = "成功" if res.get("success") else "失败"
+        print(f"【{img_type}】: {status}")
